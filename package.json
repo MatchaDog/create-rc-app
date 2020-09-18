@@ -1,0 +1,36 @@
+{
+    "name": "create-rc-app",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "private": false,
+    "scripts": {
+        "pub": "npm publish"
+    },
+    "bin": {
+        "create-rc-app": "./bin.js"
+    },
+    "keywords": [
+        "react",
+        "typescript",
+        "cli"
+    ],
+    "repository": {
+        "url": "https://github.com/MatchaDog/create-rc-app.git",
+        "type": "git"
+    },
+    "bugs": {
+        "email": "matchahans@163.com",
+        "url": "https://github.com/MatchaDog/create-rc-app/issues"
+    },
+    "author": "Hans",
+    "license": "MIT",
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "commander": "^6.1.0",
+        "cross-spawn": "^7.0.3",
+        "fs": "^0.0.1-security",
+        "log-symbols": "^4.0.0",
+        "ora": "^5.1.0"
+    }
+}

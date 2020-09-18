@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react",
+        "lib": ["es6", "dom"],
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "strict": true,
+        "strictNullChecks": false, //允许null为其他类型子集
+        "target": "ESNext",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "typeRoots": ["node_modules/@types", "src/types"]
+    },
+    "exclude": ["node_modules"]
+}
