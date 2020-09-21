@@ -2,7 +2,7 @@
  * @Date: 2020-09-18 15:31:06
  * @LastEditors: Hans
  * @description:
- * @LastEditTime: 2020-09-21 10:23:52
+ * @LastEditTime: 2020-09-21 10:45:47
  * @FilePath: /create-rc-app/src/create.js
  */
 const path = require("path");
@@ -48,13 +48,13 @@ module.exports = async function (name) {
     try {
         const targetDir = path.join(process.cwd(), name);
         // const templateDir = path.join(process.cwd(), "template");
-        const templateDir = path.join("create-rc-app", "template");
+        const templateDir = require("../template");
         await fs.mkdirp(targetDir);
         const {
             template,
             dir,
             name: fileName,
-        } = require("create-rc-app/template/package")(name);
+        } = require("../template/package")(name);
         await fs.writeFile(
             path.join(targetDir, dir, fileName),
             template.trim()
