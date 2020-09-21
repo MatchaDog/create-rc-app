@@ -2,8 +2,8 @@
  * @Date: 2020-09-18 15:31:06
  * @LastEditors: Hans
  * @description:
- * @LastEditTime: 2020-09-18 18:33:42
- * @FilePath: /cli/src/create.js
+ * @LastEditTime: 2020-09-21 10:23:52
+ * @FilePath: /create-rc-app/src/create.js
  */
 const path = require("path");
 const fs = require("../utils/fs-promise");
@@ -47,13 +47,14 @@ module.exports = async function (name) {
     const spinner = ora("下载模板中...").start();
     try {
         const targetDir = path.join(process.cwd(), name);
-        const templateDir = path.join(process.cwd(), "template");
+        // const templateDir = path.join(process.cwd(), "template");
+        const templateDir = path.join("create-rc-app", "template");
         await fs.mkdirp(targetDir);
         const {
             template,
             dir,
             name: fileName,
-        } = require("../template/package")(name);
+        } = require("create-rc-app/template/package")(name);
         await fs.writeFile(
             path.join(targetDir, dir, fileName),
             template.trim()
