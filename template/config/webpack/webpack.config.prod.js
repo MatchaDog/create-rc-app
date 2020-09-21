@@ -2,8 +2,8 @@
  * @Date: 2020-02-28 14:23:31
  * @LastEditors: Hans
  * @description:
- * @LastEditTime: 2020-08-24 16:59:33
- * @FilePath: /react-cli/config/webpack/webpack.config.prod.js
+ * @LastEditTime: 2020-09-21 17:25:16
+ * @FilePath: /create-rc-app/template/config/webpack/webpack.config.prod.js
  */
 const webpack = require("webpack");
 const paths = require("../paths");
@@ -85,13 +85,8 @@ module.exports = merge.smart(commonConfig, {
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
             "process.env.version": JSON.stringify(process.env.version),
         }),
-        // //该插件会根据模块的相对路径生成一个四位数的hash作为模块id, 建议用于生产环境。
+        // 该插件会根据模块的相对路径生成一个四位数的hash作为模块id, 建议用于生产环境。
         new webpack.HashedModuleIdsPlugin(),
-        // 过去 webpack 打包时的一个取舍是将 bundle 中各个模块单独打包成闭包。
-        // 这些打包函数使你的 JavaScript 在浏览器中处理的更慢。
-        // 相比之下，一些工具像 Closure Compiler 和 RollupJS
-        // 可以提升(hoist)或者预编译所有模块到一个闭包中，提升你的代码在浏览器中的执行速度。
-        new webpack.optimize.ModuleConcatenationPlugin(),
 
         new CleanWebpackPlugin(),
 

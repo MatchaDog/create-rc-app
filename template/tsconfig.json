@@ -2,14 +2,14 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "jsx": "react",
-        "lib": ["es6", "dom"],
-        "module": "ESNext",
+        "lib": ["es6", "dom", "ES2017.Object"],
+        "module": "commonjs",
         "moduleResolution": "node",
         "noImplicitAny": true,
         "sourceMap": true,
         "strict": true,
         "strictNullChecks": false, //允许null为其他类型子集
-        "target": "ESNext",
+        "target": "ES2019",
         "baseUrl": ".",
         "paths": {
             "@/*": ["src/*"]

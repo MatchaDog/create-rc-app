@@ -120,7 +120,7 @@ module.exports = {
             ],
         }),
         new WebpackBar({
-            name: "Hans",
+            name: "App",
             color: "#af99ff",
         }),
         // 压缩css
@@ -130,7 +130,7 @@ module.exports = {
             ignoreOrder: true,
         }),
         new HtmlWebpackPlugin({
-            title: "这是一个标题",
+            title: "App",
             template: paths.appHtml,
             inject: false,
         }),

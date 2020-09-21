@@ -2,69 +2,94 @@
  * @Date: 2020-09-18 15:31:06
  * @LastEditors: Hans
  * @description:
- * @LastEditTime: 2020-09-21 10:45:47
+ * @LastEditTime: 2020-09-21 17:23:01
  * @FilePath: /create-rc-app/src/create.js
  */
 const path = require("path");
-const fs = require("../utils/fs-promise");
+const fse = require("fs-extra");
 const install = require("./install");
 const chalk = require("chalk");
 const ora = require("ora");
 const logSymbols = require("log-symbols");
 
-async function readAndMkdir(rootDir, dir) {
-    try {
-        const fileArr = await fs.readdir(dir);
-        fileArr.map(async (fileName) => {
-            try {
-                const fileDir = path.join(dir, fileName);
-                const stat = await fs.stat(fileDir);
-                const isFileState = stat.isFile(); //是文件
-                const isDirState = stat.isDirectory(); //是文件夹
-                if (isFileState) {
-                    await fs.writeFile(path.join(rootDir, fileName), "");
+const readAndMkdir = (rootDir, dir) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const fileArr = await fse.readdir(dir);
+            fileArr.map(async (fileName) => {
+                try {
+                    const fileDir = path.join(dir, fileName);
+                    const stat = await fse.stat(fileDir);
+                    const isFileState = stat.isFile(); //是文件
+                    const isDirState = stat.isDirectory(); //是文件夹
+                    if (isFileState) {
+                        const content = await fse.readFile(fileDir);
+                        await fse.writeFile(
+                            path.join(rootDir, fileName),
+                            content
+                        );
+                        resolve();
+                    }
+                    if (isDirState) {
+                        // 从template的下级目录里截取文件夹名
+                        const templateDirPath = fileDir.replace(dir, "");
+                        // 拼接到指定目录
+                        const targetDirPath = path.join(
+                            rootDir,
+                            templateDirPath
+                        );
+                        // 在指定目录创建文件夹
+                        await fse.mkdirp(targetDirPath);
+                        //递归，如果是文件夹，就继续遍历该文件夹下面的文件
+                        await readAndMkdir(targetDirPath, fileDir);
+                    }
+                } catch (error) {
+                    console.log(logSymbols.error, chalk.red(error));
+                    process.exit();
                 }
-                if (isDirState) {
-                    // 从template的下级目录里截取文件夹名
-                    const templateDirPath = fileDir.replace(dir, "");
-                    // 拼接到指定目录
-                    const targetDirPath = path.join(rootDir, templateDirPath);
-                    // 在指定目录创建文件夹
-                    await fs.mkdirp(targetDirPath);
-                    //递归，如果是文件夹，就继续遍历该文件夹下面的文件
-                    readAndMkdir(targetDirPath, fileDir);
-                }
-            } catch (error) {
-                console.log(chalk.red(error));
-            }
-        });
-    } catch (error) {
-        console.log(chalk.red(error));
-    }
-}
+            });
+        } catch (error) {
+            reject(error);
+            console.log(logSymbols.error, chalk.red(error));
+            process.exit();
+        }
+    });
+};
 
-module.exports = async function (name) {
-    const spinner = ora("下载模板中...").start();
+const create = async (opts) => {
+    const spinner = ora("Installing packages").start();
     try {
-        const targetDir = path.join(process.cwd(), name);
-        // const templateDir = path.join(process.cwd(), "template");
-        const templateDir = require("../template");
-        await fs.mkdirp(targetDir);
-        const {
-            template,
-            dir,
-            name: fileName,
-        } = require("../template/package")(name);
-        await fs.writeFile(
+        // 目标路径
+        const targetDir = path.join(process.cwd(), opts.name);
+        // 模板路径
+        const templateDir = path.join(__dirname, "../template");
+        // 目标路径创建文件夹
+        await fse.mkdirp(targetDir);
+        // 读取package.js
+        const { template, dir, name: fileName } = require(path.join(
+            __dirname,
+            "../template/package"
+        ))(opts.name);
+        // 写入package.json
+        await fse.writeFile(
             path.join(targetDir, dir, fileName),
             template.trim()
         );
-        readAndMkdir(targetDir, templateDir);
-        spinner.succeed("模板下载完成");
-        await install({ cwd: targetDir });
-        spinner.succeed("项目初始化完成");
+        // 删除package.js
+        await fse.remove(path.join(targetDir, "package.js"));
+        // 读取dependencies
+        await readAndMkdir(targetDir, templateDir);
+        spinner.succeed("Installing template dependencies");
+        // 下载文件
+        await install({ cwd: targetDir, useYarn: opts.useYarn });
+        spinner.succeed("Create-rc-app init success");
+
+        process.exit();
     } catch (error) {
         spinner.fail();
         console.log(logSymbols.error, chalk.red(error));
+        process.exit();
     }
 };
+
+module.exports = create;
