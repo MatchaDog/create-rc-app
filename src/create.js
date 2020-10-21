@@ -82,8 +82,8 @@ const create = async (opts) => {
         spinner.succeed("Installing template dependencies");
         // 下载文件
         await install({ cwd: targetDir, useYarn: opts.useYarn });
+        await fse.writeFile(path.join(targetDir, ".gitignore"), "node_modules");
         spinner.succeed("Create-rc-app init success");
-
         process.exit();
     } catch (error) {
         spinner.fail();
