@@ -14,13 +14,17 @@ module.exports = function (name) {
     "main": "index.js",
     "author": "",
     "scripts": {
-        "start": "export NODE_ENV=development && webpack-dev-server --config ./config/webpack/webpack.config.dev.js",
-        "build": "export NODE_ENV=production && webpack --config ./config/webpack/webpack.config.prod.js",
-        "build:test": "export NODE_ENV=test && webpack --config ./config/webpack/webpack.config.prod.js",
-        "build:pre-production": "export NODE_ENV=pre-production && webpack --config ./config/webpack/webpack.config.prod.js",
-        "lint:ts": "eslint --ext .ts,.tsx src",
-        "lint:style": "stylelint src/**/*.{less,css}",
-        "lint:prettier": "prettier --write src"
+      "start": "export NODE_ENV=development && webpack-dev-server --config ./config/webpack/webpack.config.dev.js",
+      "build": "export NODE_ENV=production && webpack --config ./config/webpack/webpack.config.prod.js",
+      "build:test": "export NODE_ENV=test && webpack --config ./config/webpack/webpack.config.prod.js",
+      "build:pre-production": "export NODE_ENV=pre-production && webpack --config ./config/webpack/webpack.config.prod.js",
+      "lint": "npm run lint:prettier && npm run lint:es",
+      "lint:fix": "npm run lint:prettier_fix && npm run lint:es_fix",
+      "lint:es": "eslint src/ --ext .ts --ext .tsx",
+      "lint:es_fix": "eslint src/ --ext .ts --ext .tsx --fix",
+      "lint:prettier": "prettier --check src/",
+      "lint:prettier_fix": "prettier --write src/",
+      "lint:commit": "commitlint -e $HUSKY_GIT_PARAMS"
     },
     "dependencies": {
         "axios": "^0.19.2",
@@ -45,8 +49,16 @@ module.exports = function (name) {
         "clean-webpack-plugin": "^3.0.0",
         "compression-webpack-plugin": "^3.0.1",
         "css-loader": "^3.3.2",
-        "eslint": "^7.3.1",
-        "eslint-plugin-react-hooks": "^3.0.0",
+        "eslint": "^7.12.1",
+        "eslint-config-airbnb": "^18.2.0",
+        "eslint-config-prettier": "^6.15.0",
+        "eslint-plugin-babel": "^5.3.1",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jest": "^24.1.0",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^4.2.0",
         "file-loader": "^6.0.0",
         "happypack": "^5.0.1",
         "hard-source-webpack-plugin": "^0.13.1",
@@ -61,8 +73,12 @@ module.exports = function (name) {
         "prettier": "^2.0.5",
         "source-map-loader": "^0.2.4",
         "stats-webpack-plugin": "^0.7.0",
-        "stylelint": "^13.6.1",
-        "stylelint-prettier": "^1.1.2",
+        "stylelint": "^13.7.2",
+        "stylelint-config-prettier": "^8.0.2",
+        "stylelint-config-rational-order": "^0.1.2",
+        "stylelint-config-standard": "^20.0.0",
+        "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
+        "stylelint-order": "^4.1.0",
         "ts-import-plugin": "^1.6.2",
         "ts-loader": "^8.0.1",
         "typescript": "^3.9.5",
@@ -75,8 +91,28 @@ module.exports = function (name) {
         "webpack-dev-server": "^3.8.2",
         "webpack-merge": "^4.2.2",
         "webpackbar": "^4.0.0"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "npm run lint:commit"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.{js,jsx,ts,tsx}": [
+            "npm run lint:es_fix",
+            "npm run lint:prettier_fix"
+        ],
+        "src/**/*.{css,scss,sass,less}": [
+            "npm run lint:prettier_fix"
+        ]
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+      }
     }
-  }
     `;
     return { template, dir: "", name: "package.json" };
 };

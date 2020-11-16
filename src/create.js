@@ -23,12 +23,15 @@ const readAndMkdir = (rootDir, dir) => {
                     const isFileState = stat.isFile(); //是文件
                     const isDirState = stat.isDirectory(); //是文件夹
                     if (isFileState) {
-                        const content = await fse.readFile(fileDir);
-                        await fse.writeFile(
-                            path.join(rootDir, fileName),
-                            content
-                        );
-                        resolve();
+                        // 不写入模板package
+                        if (fileName !== "package.js") {
+                            const content = await fse.readFile(fileDir);
+                            await fse.writeFile(
+                                path.join(rootDir, fileName),
+                                content
+                            );
+                            resolve();
+                        }
                     }
                     if (isDirState) {
                         // 从template的下级目录里截取文件夹名
@@ -40,7 +43,7 @@ const readAndMkdir = (rootDir, dir) => {
                         );
                         // 在指定目录创建文件夹
                         await fse.mkdirp(targetDirPath);
-                        //递归，如果是文件夹，就继续遍历该文件夹下面的文件
+                        // 递归，如果是文件夹，就继续遍历该文件夹下面的文件
                         await readAndMkdir(targetDirPath, fileDir);
                     }
                 } catch (error) {
@@ -75,8 +78,6 @@ const create = async (opts) => {
             path.join(targetDir, dir, fileName),
             template.trim()
         );
-        // 删除package.js
-        await fse.remove(path.join(targetDir, "package.js"));
         // 读取dependencies
         await readAndMkdir(targetDir, templateDir);
         spinner.succeed("Installing template dependencies");
