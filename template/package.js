@@ -18,12 +18,14 @@ module.exports = function (name) {
       "build": "export NODE_ENV=production && webpack --config ./config/webpack/webpack.config.prod.js",
       "build:test": "export NODE_ENV=test && webpack --config ./config/webpack/webpack.config.prod.js",
       "build:pre-production": "export NODE_ENV=pre-production && webpack --config ./config/webpack/webpack.config.prod.js",
-      "lint": "npm run lint:prettier && npm run lint:es",
-      "lint:fix": "npm run lint:prettier_fix && npm run lint:es_fix",
+      "lint": "npm run lint:css && npm run lint:prettier && npm run lint:es",
+      "lint:fix": "npm run lint:css_fix && npm run lint:prettier_fix && npm run lint:es_fix",
       "lint:es": "eslint src/ --ext .ts --ext .tsx",
       "lint:es_fix": "eslint src/ --ext .ts --ext .tsx --fix",
       "lint:prettier": "prettier --check src/",
       "lint:prettier_fix": "prettier --write src/",
+      "lint:css": "stylelint src/**/*.{less,css}",
+      "lint:css_fix": "stylelint src/**/*.{less,css} --fix",
       "lint:commit": "commitlint -e $HUSKY_GIT_PARAMS"
     },
     "dependencies": {
@@ -73,7 +75,8 @@ module.exports = function (name) {
         "prettier": "^2.0.5",
         "source-map-loader": "^0.2.4",
         "stats-webpack-plugin": "^0.7.0",
-        "stylelint": "^13.7.2",
+        "stylelint": "^13.8.0",
+        "stylelint-a11y": "^1.2.3",
         "stylelint-config-prettier": "^8.0.2",
         "stylelint-config-rational-order": "^0.1.2",
         "stylelint-config-standard": "^20.0.0",
@@ -103,15 +106,10 @@ module.exports = function (name) {
             "npm run lint:es_fix",
             "npm run lint:prettier_fix"
         ],
-        "src/**/*.{css,scss,sass,less}": [
+        "src/**/*.{css,less}": [
+            "npm run lint:css_fix",
             "npm run lint:prettier_fix"
         ]
-    },
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
-        }
-      }
     }
     `;
     return { template, dir: "", name: "package.json" };

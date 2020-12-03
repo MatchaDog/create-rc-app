@@ -1,9 +1,26 @@
-{
-    "plugins": ["stylelint-prettier"],
-
-    "rules": {
+module.exports = {
+    extends: [
+        "stylelint-config-standard",
+        "stylelint-config-rational-order",
+        "stylelint-config-prettier",
+    ],
+    plugins: ["stylelint-order", "stylelint-a11y", "stylelint-declaration-block-no-ignored-properties"],
+    rules: {
         "color-no-invalid-hex": true,
         "font-family-no-duplicate-names": true,
+        "font-family-no-missing-generic-family-keyword": [
+            true,
+            {
+                ignoreFontFamilies: [
+                    "Helvetica Neue",
+                    "Helvetica",
+                    "PingFang SC",
+                    "Microsoft YaHei",
+                    "Tahoma",
+                    "Arial",
+                ],
+            },
+        ],
         "function-calc-no-invalid": true,
         "function-calc-no-unspaced-operator": true,
         "function-linear-gradient-no-nonstandard-direction": true,
@@ -25,10 +42,12 @@
         "no-duplicate-selectors": true,
         "no-extra-semicolons": true,
         "no-invalid-double-slash-comments": true,
-        "indentation": 4,
-        "rule-empty-line-before": ["always", {
-            "except":"inside-block"
-        }],
-        "prettier/prettier": true
-    }
-}
+        indentation: 4,
+        "rule-empty-line-before": [
+            "always",
+            {
+                except: "inside-block",
+            },
+        ],
+    },
+};
