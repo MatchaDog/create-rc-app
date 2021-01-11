@@ -1,14 +1,14 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-08 16:45:20
- * @LastEditTime: 2021-01-11 16:31:16
+ * @LastEditTime: 2021-01-11 16:52:27
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/index.ts
  * @Description:
  */
 import { program } from "commander";
-import init from "./init";
-import { initOpts } from "./init";
+import init, { initOpts } from "./init";
+
 const packageJson = require("../package.json");
 
 program

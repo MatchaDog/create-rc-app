@@ -1,15 +1,15 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-08 16:36:59
- * @LastEditTime: 2021-01-11 16:36:58
+ * @LastEditTime: 2021-01-11 16:52:38
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/init.ts
  * @Description:
  */
-import { checkAppNameExist, checkYarn } from "./utils";
 import * as inquirer from "inquirer";
 import * as path from "path";
 import * as chalk from "chalk";
+import { checkAppNameExist, checkYarn } from "./utils";
 import create from "./create";
 
 export type initOpts = {
@@ -20,7 +20,7 @@ export type initOpts = {
     toolkit?: boolean;
 };
 
-const init = async (name: string, { backend, html5, ssr, component, toolkit }: initOpts) => {
+const init = async (name: string, { backend, html5, ssr, component, toolkit }: initOpts): Promise<void> => {
     const dirPath = path.resolve(name);
     const dirName = path.basename(dirPath);
     console.log(dirPath);

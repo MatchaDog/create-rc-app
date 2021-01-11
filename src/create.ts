@@ -5,14 +5,17 @@
  * @LastEditTime: 2020-09-21 17:23:01
  * @FilePath: /create-rc-app/src/create.js
  */
-import install from "./install";
 import fse from "fs-extra";
 import chalk from "chalk";
 import ora from "ora";
 import logSymbols from "log-symbols";
-const path = require("path");
+import * as path from "path";
+import install from "./install";
+
+const packageJSON = require("../template/package");
 
 const readAndMkdir = (rootDir: string, dir: string) => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise<void>(async (resolve, reject) => {
         try {
             const fileArr = await fse.readdir(dir);
@@ -20,8 +23,8 @@ const readAndMkdir = (rootDir: string, dir: string) => {
                 try {
                     const fileDir = path.join(dir, fileName);
                     const stat = await fse.stat(fileDir);
-                    const isFileState = stat.isFile(); //是文件
-                    const isDirState = stat.isDirectory(); //是文件夹
+                    const isFileState = stat.isFile(); // 是文件
+                    const isDirState = stat.isDirectory(); // 是文件夹
                     if (isFileState) {
                         // 不写入模板package
                         if (fileName !== "package.js") {
@@ -53,7 +56,7 @@ const readAndMkdir = (rootDir: string, dir: string) => {
     });
 };
 
-const create = async (opts: { name: string; useYarn?: boolean }) => {
+const create = async (opts: { name: string; useYarn?: boolean }): Promise<void> => {
     const spinner = ora("Installing packages").start();
     try {
         // 目标路径
@@ -63,7 +66,7 @@ const create = async (opts: { name: string; useYarn?: boolean }) => {
         // 目标路径创建文件夹
         await fse.mkdirp(targetDir);
         // 读取package.js
-        const { template, dir, name: fileName } = require(path.join(__dirname, "../template/package"))(opts.name);
+        const { template, dir, name: fileName } = packageJSON(opts.name);
         // 写入package.json
         await fse.writeFile(path.join(targetDir, dir, fileName), template.trim());
         // 读取dependencies

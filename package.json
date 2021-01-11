@@ -5,8 +5,15 @@
     "main": "index.js",
     "private": false,
     "scripts": {
-        "pub": "npm publish",
-        "build": "gulp"
+        "pub": "npm run build && npm publish",
+        "build": "npm run lint:fix && gulp",
+        "lint": "npm run lint:prettier && npm run lint:es",
+        "lint:fix": "npm run lint:prettier_fix && npm run lint:es_fix",
+        "lint:es": "eslint src/ --ext .ts --ext .tsx",
+        "lint:es_fix": "eslint src/ --ext .ts --ext .tsx --fix",
+        "lint:prettier": "prettier --check src/",
+        "lint:prettier_fix": "prettier --write src/",
+        "lint:commit": "commitlint -e $HUSKY_GIT_PARAMS"
     },
     "bin": {
         "create-rc-app": "./bin.js"
@@ -31,6 +38,7 @@
         "commander": "^6.1.0",
         "cross-spawn": "^7.0.3",
         "del": "^6.0.0",
+        "eslint-plugin-react": "^7.22.0",
         "fs": "^0.0.1-security",
         "fs-extra": "^9.0.1",
         "inquirer": "^7.3.3",
@@ -46,16 +54,40 @@
         "@babel/plugin-transform-runtime": "^7.12.10",
         "@babel/preset-env": "^7.12.11",
         "@babel/preset-typescript": "^7.12.7",
+        "@commitlint/cli": "^9.1.1",
+        "@commitlint/config-conventional": "^9.1.1",
         "@types/cross-spawn": "^6.0.2",
         "@types/fs-extra": "^9.0.6",
         "@types/inquirer": "^7.3.1",
         "@types/node": "^14.14.20",
         "@types/semver": "^7.3.4",
         "@types/validate-npm-package-name": "^3.0.2",
+        "@typescript-eslint/eslint-plugin": "^4.8.2",
+        "@typescript-eslint/parser": "^4.8.2",
+        "eslint": "^7.12.1",
+        "eslint-config-airbnb": "^18.2.0",
+        "eslint-config-prettier": "^6.15.0",
+        "eslint-plugin-babel": "^5.3.1",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-prettier": "^3.1.4",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-typescript": "^6.0.0-alpha.1",
         "gulp-uglify": "^3.0.2",
+        "prettier": "^2.0.5",
         "typescript": "^4.1.3"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "npm run lint:commit"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.{js,ts}": [
+            "npm run lint:es_fix",
+            "npm run lint:prettier_fix"
+        ]
     }
 }

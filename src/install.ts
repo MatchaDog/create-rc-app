@@ -7,7 +7,7 @@
  */
 import spawn from "cross-spawn";
 
-const install = (options: { cwd: string; useYarn?: boolean }) => {
+const install = (options: { cwd: string; useYarn?: boolean }): Promise<void> => {
     const cwd = options.cwd || process.cwd();
     return new Promise<void>((resolve, reject) => {
         const command = options.useYarn ? "yarn" : "npm";
@@ -19,9 +19,7 @@ const install = (options: { cwd: string; useYarn?: boolean }) => {
 
         child.once("close", (code: number) => {
             if (code !== 0) {
-                reject({
-                    command: `${command} ${args.join(" ")}`,
-                });
+                reject();
                 return;
             }
             resolve();
