@@ -8,8 +8,6 @@
 const { dest, series } = require("gulp");
 const ts = require("gulp-typescript");
 const babel = require("gulp-babel");
-const uglify = require("gulp-uglify");
-const concat = require("gulp-concat");
 const del = require("del");
 
 async function clean() {
@@ -28,8 +26,6 @@ function commonjs() {
                 configFile: "./.babelrc",
             }),
         )
-        .pipe(concat("crca.min.js"))
-        .pipe(uglify())
         .pipe(dest("lib/"));
 }
 

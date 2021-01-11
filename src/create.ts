@@ -5,18 +5,18 @@
  * @LastEditTime: 2020-09-21 17:23:01
  * @FilePath: /create-rc-app/src/create.js
  */
-import path from "path";
-import fse from "fs-extra";
 import install from "./install";
+import fse from "fs-extra";
 import chalk from "chalk";
 import ora from "ora";
 import logSymbols from "log-symbols";
+const path = require("path");
 
 const readAndMkdir = (rootDir: string, dir: string) => {
     return new Promise<void>(async (resolve, reject) => {
         try {
             const fileArr = await fse.readdir(dir);
-            fileArr.map(async (fileName) => {
+            fileArr.map(async (fileName: string) => {
                 try {
                     const fileDir = path.join(dir, fileName);
                     const stat = await fse.stat(fileDir);

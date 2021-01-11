@@ -17,7 +17,7 @@ const install = (options: { cwd: string; useYarn?: boolean }) => {
             stdio: ["pipe", process.stdout, process.stderr],
         });
 
-        child.once("close", (code) => {
+        child.once("close", (code: number) => {
             if (code !== 0) {
                 reject({
                     command: `${command} ${args.join(" ")}`,
