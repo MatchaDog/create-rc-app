@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react",
+        "lib": ["es6", "dom", "ES2017.Object"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "strict": true,
+        "strictNullChecks": false, //允许null为其他类型子集
+        "target": "ES2019",
+        "baseUrl": ".",
+        "resolveJsonModule": true,
+        "typeRoots": ["node_modules/@types", "src/types"]
+    },
+    "exclude": ["node_modules", "template"]
+}

@@ -5,15 +5,15 @@
  * @LastEditTime: 2020-09-21 17:23:01
  * @FilePath: /create-rc-app/src/create.js
  */
-const path = require("path");
-const fse = require("fs-extra");
-const install = require("./install");
-const chalk = require("chalk");
-const ora = require("ora");
-const logSymbols = require("log-symbols");
+import path from "path";
+import fse from "fs-extra";
+import install from "./install";
+import chalk from "chalk";
+import ora from "ora";
+import logSymbols from "log-symbols";
 
-const readAndMkdir = (rootDir, dir) => {
-    return new Promise(async (resolve, reject) => {
+const readAndMkdir = (rootDir: string, dir: string) => {
+    return new Promise<void>(async (resolve, reject) => {
         try {
             const fileArr = await fse.readdir(dir);
             fileArr.map(async (fileName) => {
@@ -26,10 +26,7 @@ const readAndMkdir = (rootDir, dir) => {
                         // 不写入模板package
                         if (fileName !== "package.js") {
                             const content = await fse.readFile(fileDir);
-                            await fse.writeFile(
-                                path.join(rootDir, fileName),
-                                content
-                            );
+                            await fse.writeFile(path.join(rootDir, fileName), content);
                             resolve();
                         }
                     }
@@ -37,10 +34,7 @@ const readAndMkdir = (rootDir, dir) => {
                         // 从template的下级目录里截取文件夹名
                         const templateDirPath = fileDir.replace(dir, "");
                         // 拼接到指定目录
-                        const targetDirPath = path.join(
-                            rootDir,
-                            templateDirPath
-                        );
+                        const targetDirPath = path.join(rootDir, templateDirPath);
                         // 在指定目录创建文件夹
                         await fse.mkdirp(targetDirPath);
                         // 递归，如果是文件夹，就继续遍历该文件夹下面的文件
@@ -59,7 +53,7 @@ const readAndMkdir = (rootDir, dir) => {
     });
 };
 
-const create = async (opts) => {
+const create = async (opts: { name: string; useYarn?: boolean }) => {
     const spinner = ora("Installing packages").start();
     try {
         // 目标路径
@@ -69,15 +63,9 @@ const create = async (opts) => {
         // 目标路径创建文件夹
         await fse.mkdirp(targetDir);
         // 读取package.js
-        const { template, dir, name: fileName } = require(path.join(
-            __dirname,
-            "../template/package"
-        ))(opts.name);
+        const { template, dir, name: fileName } = require(path.join(__dirname, "../template/package"))(opts.name);
         // 写入package.json
-        await fse.writeFile(
-            path.join(targetDir, dir, fileName),
-            template.trim()
-        );
+        await fse.writeFile(path.join(targetDir, dir, fileName), template.trim());
         // 读取dependencies
         await readAndMkdir(targetDir, templateDir);
         spinner.succeed("Installing template dependencies");
@@ -93,4 +81,4 @@ const create = async (opts) => {
     }
 };
 
-module.exports = create;
+export default create;

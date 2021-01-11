@@ -5,11 +5,11 @@
  * @LastEditTime: 2020-09-21 15:46:30
  * @FilePath: /create-rc-app/src/install.js
  */
-const spawn = require("cross-spawn");
+import spawn from "cross-spawn";
 
-module.exports = function install(options) {
+const install = (options: { cwd: string; useYarn?: boolean }) => {
     const cwd = options.cwd || process.cwd();
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const command = options.useYarn ? "yarn" : "npm";
         const args = ["install"];
         const child = spawn(command, args, {
@@ -29,3 +29,5 @@ module.exports = function install(options) {
         child.once("error", reject);
     });
 };
+
+export default install;
