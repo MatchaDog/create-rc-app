@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-11 18:03:45
- * @LastEditTime: 2021-01-12 16:55:48
+ * @LastEditTime: 2021-01-12 20:42:36
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/templates/package.ts
  * @Description:
@@ -29,8 +29,8 @@ const getPkgTemplate = (name: string, opts: any): string => {
         webpackbar: "^4.0.0",
     };
     let baseScripts: { [index: string]: string } = {
-        start: "export NODE_ENV=development && webpack-dev-server --config ./config/webpack/webpack.config.dev.js",
-        build: "export NODE_ENV=production && webpack --config ./config/webpack/webpack.config.prod.js",
+        start: "export NODE_ENV=development && webpack-dev-server --config ./config/webpack.config.dev.js",
+        build: "export NODE_ENV=production && webpack --config ./config/webpack.config.prod.js",
         "lint:prettier": "prettier --check src/",
         "lint:prettier_fix": "prettier --write src/",
     };
@@ -124,6 +124,14 @@ const getPkgTemplate = (name: string, opts: any): string => {
             "@types/react-router-dom": "^5.1.3",
             "ts-loader": "^8.0.1",
             typescript: "^3.9.5",
+        };
+    } else {
+        baseDevDependencies = {
+            ...baseDevDependencies,
+            "@babel/plugin-transform-runtime": "^7.12.10",
+            "@babel/preset-env": "^7.12.11",
+            "@babel/preset-react": "^7.12.10",
+            "babel-loader": "^8.2.2",
         };
     }
 

@@ -24,6 +24,8 @@ import getImport from "./templates/config/webpack.import";
 import getDevWebpack from "./templates/config/webpack.config.dev";
 import getProdWebpack from "./templates/config/webpack.config.prod";
 import getCommonWebpack from "./templates/config/webpack.config.common";
+import getIndex from "./templates/src";
+import getApp from "./templates/src/pages/App";
 
 const readAndMkdir = (rootDir: string, dir: string) => {
     // eslint-disable-next-line no-async-promise-executor
@@ -84,14 +86,12 @@ const create = async ({
 }): Promise<void> => {
     const spinner = ora("Installing packages").start();
     try {
+        spinner.succeed("Making template files and dictionaries");
         // 目标路径
         const targetDir = path.join(process.cwd(), name);
-        // 模板路径
-        const templateDir = path.join(__dirname, "../template");
         // 目标路径创建文件夹
         await fse.mkdirp(targetDir);
         // 写入package.json
-        spinner.succeed("Installing template dependencies");
         if (initOpts.backend) {
             if (opts?.lint?.includes("eslint")) {
                 await fse.writeFile(path.join(targetDir, ".eslintrc.js"), getEslint());
@@ -109,6 +109,8 @@ const create = async ({
             }
             const publicDir = path.join(targetDir, "public");
             const configDir = path.join(targetDir, "config");
+            const srcDir = path.join(targetDir, "src");
+            const pagesDir = path.join(srcDir, "src");
 
             await fse.mkdirp(publicDir);
             await fse.writeFile(path.join(publicDir, "index.html"), getHtml());
@@ -118,20 +120,22 @@ const create = async ({
             await fse.writeFile(path.join(configDir, "webpack.config.dev.js"), getDevWebpack());
             await fse.writeFile(path.join(configDir, "webpack.import.js"), getImport());
             await fse.writeFile(path.join(configDir, "paths.js"), getPath());
+            await fse.mkdirp(srcDir);
+            await fse.mkdirp(pagesDir);
+            await fse.writeFile(path.join(srcDir, opts.ts ? "index.tsx" : "index.jsx"), getIndex());
+            await fse.writeFile(path.join(pagesDir, opts.ts ? "App.tsx" : "App.jsx"), getApp(opts));
             await fse.writeFile(
                 path.join(targetDir, "package.json"),
                 JSON.stringify(JSON.parse(getPackageJson(name, opts)), null, 4),
             );
         }
-        // await fse.writeFile(path.join(targetDir, dir, fileName), template.trim());
-        // 读取dependencies
-        return;
-        await readAndMkdir(targetDir, templateDir);
+        // await readAndMkdir(targetDir, templateDir);
         spinner.succeed("Installing template dependencies");
         // 下载文件
         await install({ cwd: targetDir, useYarn: opts.package === "yarn" });
         await fse.writeFile(path.join(targetDir, ".gitignore"), "node_modules");
-        spinner.succeed("Create-rc-app init success");
+        spinner.succeed("Create-rc-app init successfully");
+        chalk.green(`You can input 'cd ${name}', and 'npm start' to setup your project`);
         process.exit();
     } catch (error) {
         spinner.fail();

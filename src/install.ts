@@ -5,7 +5,7 @@
  * @LastEditTime: 2020-09-21 15:46:30
  * @FilePath: /create-rc-app/src/install.js
  */
-import spawn from "cross-spawn";
+import * as spawn from "cross-spawn";
 
 const install = (options: { cwd: string; useYarn?: boolean }): Promise<void> => {
     const cwd = options.cwd || process.cwd();

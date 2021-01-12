@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-12 15:33:12
- * @LastEditTime: 2021-01-12 17:20:41
+ * @LastEditTime: 2021-01-12 20:58:31
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/templates/config/webpack.config.common.ts
  * @Description:
@@ -124,7 +124,7 @@ const getCommonWebpack = (name: string, opts: any): string => {
                             if (process.env.NODE_ENV === "development") {
                                 return "[path][name].[ext]";
                             }
-                            return \`static/images/[name]_[hash:6].[${new Date().getTime()}].[ext]\`;
+                            return \`static/images/[name]_[hash:6].[ext]\`;
                         },
                         publicPath: "./",
                         outputPath: "/",
@@ -140,7 +140,7 @@ const getCommonWebpack = (name: string, opts: any): string => {
                 use: {
                     loader: "file-loader",
                     options: {
-                        name: \`static/fonts/[name]_[hash:6].[${new Date().getTime()}].[ext]\`,
+                        name: \`static/fonts/[name]_[hash:6].[ext]\`,
                         outputPath: "/",
                     },
                 },
@@ -160,7 +160,7 @@ module.exports = {
         alias: {
             "@": path.resolve(__dirname, "../../src"),
         },
-        extensions: [".tsx", ".ts", ".js", ".json"],
+        extensions: [".tsx", ".ts", ".js", ".jsx", ".json"],
     },
     devtool: "source-map",
     stats: "errors-only",
@@ -198,12 +198,12 @@ module.exports = {
             color: "#af99ff",
         }),
         new MiniCssExtractPlugin({
-            filename: \`static/css/[name]_[hash:6].${new Date().getTime()}.css\`,
-            chunkFilename: \`static/css/[name]_[hash:6].${new Date().getTime()}.css\`,
+            filename: \`static/css/[name]_[hash:6].css\`,
+            chunkFilename: \`static/css/[name]_[hash:6].css\`,
             ignoreOrder: true,
         }),
         new HtmlWebpackPlugin({
-            title: ${name},
+            title: "${name}",
             template: paths.appHtml,
             inject: false,
         }),

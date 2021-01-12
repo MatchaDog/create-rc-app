@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-12 15:54:08
- * @LastEditTime: 2021-01-12 16:52:17
+ * @LastEditTime: 2021-01-12 20:58:39
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/templates/config/webpack.config.prod.ts
  * @Description:
@@ -24,8 +24,8 @@ module.exports = merge.smart(commonConfig, {
    entry: paths.appIndex,
    output: {
        path: paths.appBuild,
-       filename: \`static/js/[name]_[hash:6].${new Date().getTime()}.js\`,
-       chunkFilename: \`static/js/[name]_[hash:6].${new Date().getTime()}.js\`,
+       filename: \`static/js/[name]_[hash:6].js\`,
+       chunkFilename: \`static/js/[name]_[hash:6].js\`,
    },
    optimization: {
        minimizer: [
