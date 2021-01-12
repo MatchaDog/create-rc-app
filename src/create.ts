@@ -86,7 +86,7 @@ const create = async ({
 }): Promise<void> => {
     const spinner = ora("Installing packages").start();
     try {
-        spinner.succeed("Making template files and dictionaries");
+        console.log(chalk.green("Making template files and dictionaries..."));
         // 目标路径
         const targetDir = path.join(process.cwd(), name);
         // 目标路径创建文件夹
@@ -130,12 +130,12 @@ const create = async ({
             );
         }
         // await readAndMkdir(targetDir, templateDir);
-        spinner.succeed("Installing template dependencies");
+        console.log(chalk.green("Installing template dependencies..."));
         // 下载文件
         await install({ cwd: targetDir, useYarn: opts.package === "yarn" });
         await fse.writeFile(path.join(targetDir, ".gitignore"), "node_modules");
         spinner.succeed("Create-rc-app init successfully");
-        chalk.green(`You can input 'cd ${name}', and 'npm start' to setup your project`);
+        console.log(chalk.green(`You can input 'cd ${name}', and 'npm start' to setup your project`));
         process.exit();
     } catch (error) {
         spinner.fail();
