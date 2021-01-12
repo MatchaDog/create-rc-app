@@ -5,6 +5,7 @@
  * @LastEditTime: 2020-08-21 17:33:18
  * @FilePath: /hooooks/gulpfile.js
  */
+const gulp = require("gulp");
 const { dest, series } = require("gulp");
 const ts = require("gulp-typescript");
 const babel = require("gulp-babel");

@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-08 16:36:59
- * @LastEditTime: 2021-01-11 16:52:38
+ * @LastEditTime: 2021-01-11 18:44:15
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/init.ts
  * @Description:
@@ -55,11 +55,18 @@ const init = async (name: string, { backend, html5, ssr, component, toolkit }: i
                 type: "confirm",
                 default: true,
             },
+            {
+                message: "Check the package management",
+                name: "package",
+                type: "list",
+                choices: ["npm", "yarn"],
+                default: "yarn",
+            },
         ]);
         console.log();
         console.log(`Creating a new React app in ${chalk.green(dirPath)}`);
         console.log();
-        create({ name, useYarn: checkYarn() });
+        create({ name, opts: result, initOpts: { backend: true } });
     }
 };
 
