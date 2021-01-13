@@ -12,9 +12,11 @@ import * as logSymbols from "log-symbols";
 import * as path from "path";
 import install from "./install";
 
+import { getEslintIgnore, getPrettierIgnore } from "./templates/ignore";
 import getEslint from "./templates/eslintrc";
 import getStylelint from "./templates/stylelintrc";
 import getCommitlint from "./templates/commitlintrc";
+import getPrettier from "./templates/prettier";
 import getPackageJson from "./templates/package";
 import getBabel from "./templates/babelrc";
 import getTs from "./templates/tsconfig";
@@ -93,49 +95,65 @@ const create = async ({
         await fse.mkdirp(targetDir);
         // 写入package.json
         if (initOpts.backend) {
+            // make lint file
             if (opts?.lint?.includes("eslint")) {
+                // eslint
                 await fse.writeFile(path.join(targetDir, ".eslintrc.js"), getEslint());
+                // eslintignore
+                await fse.writeFile(path.join(targetDir, ".eslintignore"), getEslintIgnore());
             }
             if (opts?.lint?.includes("stylelint")) {
+                // stylelint
                 await fse.writeFile(path.join(targetDir, ".stylelintrc.js"), getStylelint());
             }
             if (opts?.lint?.includes("commitlint")) {
+                // commitlint
                 await fse.writeFile(path.join(targetDir, ".commitlintrc.js"), getCommitlint());
             }
             if (opts.ts) {
+                // tsconfig
                 await fse.writeFile(path.join(targetDir, "tsconfig.json"), getTs());
             } else {
-                await fse.writeFile(path.join(targetDir, ".babelrc.js"), getBabel());
+                // babel
+                await fse.writeFile(path.join(targetDir, ".babelrc.js"), getBabel(opts));
             }
-            const publicDir = path.join(targetDir, "public");
-            const configDir = path.join(targetDir, "config");
-            const srcDir = path.join(targetDir, "src");
-            const pagesDir = path.join(srcDir, "src");
 
+            // html and public dictionary
+            const publicDir = path.join(targetDir, "public");
             await fse.mkdirp(publicDir);
             await fse.writeFile(path.join(publicDir, "index.html"), getHtml());
+            // webpack config files
+            const configDir = path.join(targetDir, "config");
             await fse.mkdirp(configDir);
             await fse.writeFile(path.join(configDir, "webpack.config.common.js"), getCommonWebpack(name, opts));
             await fse.writeFile(path.join(configDir, "webpack.config.prod.js"), getProdWebpack());
             await fse.writeFile(path.join(configDir, "webpack.config.dev.js"), getDevWebpack());
             await fse.writeFile(path.join(configDir, "webpack.import.js"), getImport());
-            await fse.writeFile(path.join(configDir, "paths.js"), getPath());
+            await fse.writeFile(path.join(configDir, "paths.js"), getPath(opts));
+            // base pages and components files
+            const srcDir = path.join(targetDir, "src");
+            const pagesDir = path.join(srcDir, "pages");
             await fse.mkdirp(srcDir);
             await fse.mkdirp(pagesDir);
             await fse.writeFile(path.join(srcDir, opts.ts ? "index.tsx" : "index.jsx"), getIndex());
             await fse.writeFile(path.join(pagesDir, opts.ts ? "App.tsx" : "App.jsx"), getApp(opts));
+            // package.json
             await fse.writeFile(
                 path.join(targetDir, "package.json"),
                 JSON.stringify(JSON.parse(getPackageJson(name, opts)), null, 4),
             );
+            // prettier
+            await fse.writeFile(path.join(targetDir, ".prettierrc"), getPrettier());
+            await fse.writeFile(path.join(targetDir, ".prettierignore"), getPrettierIgnore());
         }
         // await readAndMkdir(targetDir, templateDir);
+        spinner.succeed("Templates made successfully");
         console.log(chalk.green("Installing template dependencies..."));
         // 下载文件
         await install({ cwd: targetDir, useYarn: opts.package === "yarn" });
         await fse.writeFile(path.join(targetDir, ".gitignore"), "node_modules");
         spinner.succeed("Create-rc-app init successfully");
-        console.log(chalk.green(`You can input 'cd ${name}', and 'npm start' to setup your project`));
+        console.log(chalk.green(`You can type 'cd ${name}', and 'npm start' to setup your project`));
         process.exit();
     } catch (error) {
         spinner.fail();

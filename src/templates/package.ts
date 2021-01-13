@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-11 18:03:45
- * @LastEditTime: 2021-01-12 20:42:36
+ * @LastEditTime: 2021-01-13 14:18:55
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/templates/package.ts
  * @Description:
@@ -110,11 +110,17 @@ const getPkgTemplate = (name: string, opts: any): string => {
         };
     }
     if (opts?.antd) {
-        baseDevDependencies = {
-            ...baseDevDependencies,
-            stylus: "^0.54.8",
-            "ts-import-plugin": "^1.6.2",
-        };
+        if (opts?.ts) {
+            baseDevDependencies = {
+                ...baseDevDependencies,
+                "ts-import-plugin": "^1.6.2",
+            };
+        } else {
+            baseDevDependencies = {
+                ...baseDevDependencies,
+                "babel-plugin-import": "^1.13.3",
+            };
+        }
     }
     if (opts?.ts) {
         baseDevDependencies = {

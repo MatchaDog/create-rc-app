@@ -1,7 +1,7 @@
 /**
  * @Author: Hans
  * @Date: 2021-01-12 15:33:12
- * @LastEditTime: 2021-01-12 20:58:31
+ * @LastEditTime: 2021-01-13 14:40:44
  * @LastEditors: Do not edit
  * @FilePath: /create-rc-app/src/templates/config/webpack.config.common.ts
  * @Description:
@@ -47,7 +47,7 @@ const getCommonWebpack = (name: string, opts: any): string => {
                 ],
             },
             ${
-                opts?.css?.includes("less")
+                opts?.css?.includes("less") || opts.antd
                     ? `{
                 test: ${/\.less$/},
                 use: [
@@ -62,9 +62,19 @@ const getCommonWebpack = (name: string, opts: any): string => {
                             plugins: [require("autoprefixer")()],
                         },
                     },
-                    {
+                    ${
+                        opts.antd
+                            ? `{
+                                loader: "less-loader",
+                                options: {
+                                    javascriptEnabled: true
+                                }
+                            }`
+                            : `{
                         loader: "less-loader",
-                    },
+                    }`
+                    }
+                    
                 ],
             },`
                     : ""
